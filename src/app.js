@@ -1,0 +1,26 @@
+const express = require("express");
+const dotenv = require("dotenv");
+const helmet = require("helmet");
+const cors = require("cors");
+const connectDB = require("./config/db");
+
+dotenv.config();
+connectDB();
+
+const app = express();
+
+// Configuração do CORS
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.use(helmet());
+app.use(express.json());
+
+app.use("/api/auth", require("./routes/authRoutes"));
+
+module.exports = app;
