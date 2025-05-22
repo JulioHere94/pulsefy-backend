@@ -17,10 +17,13 @@ app.use(
       "http://127.0.0.1:3000",
       "https://pulsefy.mooo.com",
       "http://pulsefy.mooo.com",
+      "https://api.pulsefy.mooo.com",
+      "http://api.pulsefy.mooo.com",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
+    exposedHeaders: ["Access-Control-Allow-Origin"],
   })
 );
 
