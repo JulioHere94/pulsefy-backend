@@ -5,13 +5,13 @@ dotenv.config();
 const connectDB = async () => {
   try {
     console.log("Tentando conectar ao MongoDB...");
-    console.log("URI:", process.env.MONGO_URI);
+    console.log("URI:", process.env.MONGODB_URI);
 
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000,
-      family: 4 // Força IPv4
+      family: 4, // Força IPv4
     });
     console.log("MongoDB conectado com sucesso!");
   } catch (err) {
