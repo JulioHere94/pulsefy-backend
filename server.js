@@ -1,15 +1,42 @@
+const http = require("http");
 const https = require("https");
 const fs = require("fs");
 const app = require("./src/app");
 
-// Configuração do HTTPS
-const options = {
-  key: fs.readFileSync("/caminho/para/sua/chave/privada.key"),
-  cert: fs.readFileSync("/caminho/para/seu/certificado.crt"),
-};
-
 const PORT = process.env.PORT || 3000;
 
-https.createServer(options, app).listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+// Create HTTP server
+const httpServer = http.createServer(app);
+httpServer.listen(PORT, () => {
+  console.log(`HTTP Server running on port ${PORT}`);
 });
+
+// If SSL certificates exist, create HTTPS server
+try {
+  const privateKey = fs.readFileSync(
+    "/etc/letsencrypt/live/api.pulsefy.mooo.com/privkey.pem",
+    "utf8"
+  );
+  const certificate = fs.readFileSync(
+    "/etc/letsencrypt/live/api.pulsefy.mooo.com/cert.pem",
+    "utf8"
+  );
+  const ca = fs.readFileSync(
+    "/etc/letsencrypt/live/api.pulsefy.mooo.com/chain.pem",
+    "utf8"
+  );
+
+  const credentials = {
+    key: privateKey,
+    cert: certificate,
+    ca: ca,
+  };
+
+  const httpsServer = https.createServer(credentials, app);
+  httpsServer.listen(443, () => {
+    console.log("HTTPS Server running on port 443");
+  });
+} catch (error) {
+  console.log("SSL certificates not found. HTTPS server not started.");
+  console.log("Error:", error.message);
+}
