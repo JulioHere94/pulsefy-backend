@@ -33,6 +33,22 @@ try {
   };
 
   const httpsServer = https.createServer(credentials, app);
+
+  // Handle CORS preflight requests
+  httpsServer.on("request", (req, res) => {
+    if (req.method === "OPTIONS") {
+      res.writeHead(204, {
+        "Access-Control-Allow-Origin": "https://pulsefy.mooo.com",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Max-Age": "86400",
+      });
+      res.end();
+      return;
+    }
+  });
+
   httpsServer.listen(443, () => {
     console.log("HTTPS Server running on port 443");
   });

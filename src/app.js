@@ -9,23 +9,34 @@ connectDB();
 
 const app = express();
 
-// Configuração do CORS - mais permissiva para debug
+// Configuração do CORS
 app.use(
   cors({
-    origin: true, // Permite todas as origens temporariamente
+    origin: "https://pulsefy.mooo.com",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Access-Control-Allow-Origin"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
 
-// Configuração do Helmet com algumas restrições relaxadas para debug
+// Configuração do Helmet
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
     crossOriginOpenerPolicy: { policy: "unsafe-none" },
   })
 );
+
+// Middleware para debug de CORS
+app.use((req, res, next) => {
+  console.log("Request Origin:", req.headers.origin);
+  console.log("Request Method:", req.method);
+  console.log("Request Headers:", req.headers);
+  next();
+});
 
 app.use(express.json());
 
