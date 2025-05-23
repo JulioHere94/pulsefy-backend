@@ -34,7 +34,6 @@ app.use(helmet());
 
 // Rotas
 app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/data", require("./routes/dataRoutes"));
 
 // Error handling
 app.use((err, req, res, next) => {
