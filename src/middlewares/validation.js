@@ -1,4 +1,5 @@
 const validateRegister = (req, res, next) => {
+  console.log("Register validation - Request body:", req.body);
   const { nome, email, senha } = req.body;
 
   if (!nome || !email || !senha) {

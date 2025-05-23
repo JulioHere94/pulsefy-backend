@@ -9,28 +9,19 @@ connectDB();
 
 const app = express();
 
-// Configuração do CORS
-app.use(
-  cors({
-    origin: "https://pulsefy.mooo.com",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["Access-Control-Allow-Origin"],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-  })
-);
+// Configuração do CORS - apenas para desenvolvimento local
+if (process.env.NODE_ENV === "development") {
+  app.use(
+    cors({
+      origin: "https://pulsefy.mooo.com",
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  );
+}
 
-// Configuração do Helmet
-app.use(
-  helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-    crossOriginOpenerPolicy: { policy: "unsafe-none" },
-  })
-);
-
-// Middleware para debug de CORS
+// Middleware para logging de requisições
 app.use((req, res, next) => {
   console.log("Request Origin:", req.headers.origin);
   console.log("Request Method:", req.method);
@@ -39,7 +30,16 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+app.use(helmet());
 
+// Rotas
 app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/data", require("./routes/dataRoutes"));
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ msg: "Erro no servidor" });
+});
 
 module.exports = app;
